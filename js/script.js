@@ -1,15 +1,91 @@
-<script>
 document.addEventListener('DOMContentLoaded', function() {
     // Ponto de entrada: Seleciona os elementos principais
     const loadingOverlay = document.getElementById('loading-overlay');
+    let loggedInUserSession = JSON.parse(localStorage.getItem('loggedInUserSession')); // Tenta carregar sessão
+    const loginScreen = document.getElementById('login-screen');
     const appContainer = document.getElementById('app-container');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
     const mainContent = document.getElementById('main-content');
 
-    // Os "bancos de dados" agora são arrays vazios que serão preenchidos com dados do servidor.
-    let mockAlunosDB = [];
-    let mockUsersDB = []; // Será usado principalmente na tela de admin
-    let pagamentosDB = [];
-    let servicosDB = {}; // Será carregado do servidor
+    let inactivityTimer;
+
+    // Simulação de um banco de dados de usuários
+    // Tenta carregar do localStorage, se não existir, usa os dados iniciais
+    let mockUsersDB = JSON.parse(localStorage.getItem('mockUsersDB')) || [
+        { id: 1, username: 'admin', password: 'admin', name: 'Administrador', email: 'admin@example.com', permissions: ['cadastro', 'relatorio', 'financeiro', 'presenca', 'usuarios', 'configuracoes'] },
+        { id: 2, username: 'professor', password: '123', name: 'Professor Silva', email: 'professor@example.com', permissions: ['cadastro', 'presenca'] }
+    ];
+
+
+    // Função para salvar usuários no localStorage
+    function saveUsersToLocalStorage() {
+        localStorage.setItem('mockUsersDB', JSON.stringify(mockUsersDB));
+    }
+
+    // Salva os usuários iniciais se o localStorage estiver vazio
+    if (!localStorage.getItem('mockUsersDB')) {
+        saveUsersToLocalStorage();
+    }
+
+    // Garante que o usuário 'admin' sempre tenha todas as permissões, corrigindo dados antigos no localStorage
+    const adminUser = mockUsersDB.find(user => user.username === 'admin');
+    if (adminUser) {
+        const allPermissions = ['cadastro', 'relatorio', 'financeiro', 'presenca', 'usuarios', 'configuracoes'];
+        // Adiciona qualquer permissão que esteja faltando
+        allPermissions.forEach(p => {
+            if (!adminUser.permissions.includes(p)) adminUser.permissions.push(p);
+        });
+        saveUsersToLocalStorage(); // Salva a correção
+    }
+
+    // Garante que a aplicação comece com a tela de login visível
+    appContainer.classList.add('hidden');
+    loginScreen.classList.remove('hidden');
+
+    // Simulação de um banco de dados de alunos
+    let mockAlunosDB = JSON.parse(localStorage.getItem('mockAlunosDB')) || [
+        {
+            id: 1, nome: 'ANA SILVA', turma: '5º Ano A', responsavel: 'MARCOS SILVA', email: 'marcos.silva@email.com', telefone: '(11) 98765-4321',
+            servicosContratados: {
+                integral: { id: 'integral-5-dias', dias: ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'] },
+                extraclasse: [1] // Vôlei EFAI
+            }
+        },
+        {
+            id: 2, nome: 'BRUNO COSTA', turma: '6º Ano B', responsavel: 'JULIANA COSTA', email: 'juliana.c@email.com', telefone: '(21) 91234-5678',
+            servicosContratados: {
+                integral: { id: 'semi-integral-3-dias', dias: ['Segunda-feira', 'Quarta-feira', 'Sexta-feira'] },
+                extraclasse: [2] // Teatro EFAI
+            }
+        },
+        { id: 3, nome: 'CARLA DIAS', turma: '5º Ano A', responsavel: 'ROBERTO DIAS', email: 'roberto.dias@email.com', telefone: '(31) 95555-8888', servicosContratados: { integral: null, extraclasse: [1, 2] } } // Vôlei EFAI e Teatro EFAI
+    ];
+
+    // Função para salvar alunos no localStorage
+    function saveAlunosToLocalStorage() {
+        localStorage.setItem('mockAlunosDB', JSON.stringify(mockAlunosDB));
+    }
+
+    // Salva os alunos iniciais se o localStorage estiver vazio
+    if (!localStorage.getItem('mockAlunosDB')) {
+        saveAlunosToLocalStorage();
+    }
+
+    // Simulação de um banco de dados de pagamentos
+    let pagamentosDB = JSON.parse(localStorage.getItem('pagamentosDB')) || [];
+
+    // Função para salvar pagamentos no localStorage
+    function savePagamentosToLocalStorage() {
+        localStorage.setItem('pagamentosDB', JSON.stringify(pagamentosDB));
+    }
+
+    // Salva os pagamentos iniciais se o localStorage estiver vazio
+    if (!localStorage.getItem('pagamentosDB')) {
+        savePagamentosToLocalStorage();
+    }
+
+
 
 
     // --- SISTEMA DE NOTIFICAÇÃO E CONFIRMAÇÃO ---
@@ -78,22 +154,73 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    // --- INICIALIZAÇÃO DIRETA DA APLICAÇÃO ---
+    // Esconde a tela de carregamento
+    // A tela de carregamento só será escondida após a decisão de login
 
-    // Como removemos a tela de login, vamos simular um usuário admin logado
-    // para ter acesso a todas as funcionalidades.
-    const mockAdminUser = {
-        id: 1,
-        username: 'admin',
-        name: 'Administrador',
-        email: 'admin@example.com',
-        permissions: ['cadastro', 'relatorio', 'financeiro', 'presenca', 'usuarios', 'configuracoes']
-    };
+    // Se houver uma sessão salva, tenta logar automaticamente
+    if (loggedInUserSession) {
+        autoLogin(loggedInUserSession);
+    } else {
+        loadingOverlay.classList.add('loading-hidden'); // Esconde se não houver sessão
+    }
 
-    // Inicia a aplicação diretamente com o usuário admin
-    initializeApp(mockAdminUser);
+    // --- LÓGICA DE LOGIN E TIMEOUT ---
 
-    loadingOverlay.classList.add('loading-hidden');
+    function logout() {
+        appContainer.classList.add('hidden');
+        loginScreen.classList.remove('hidden');
+        clearTimeout(inactivityTimer);
+        localStorage.removeItem('loggedInUserSession'); // Remove a sessão ao deslogar
+    }
+
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(logout, 5 * 60 * 1000); // 5 minutos (5 * 60 segundos * 1000 ms)
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+
+        // Verifica as credenciais no mockUsersDB
+        const foundUser = mockUsersDB.find(user => user.username === username && user.password === password);
+
+        if (foundUser) {
+            performLogin(foundUser);
+        } else {
+            loginError.textContent = 'Usuário ou senha inválidos.';
+        }
+    });
+
+    function performLogin(user) {
+        loginScreen.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+        loginError.textContent = '';
+        document.getElementById('username').value = ''; // Limpa o campo de login
+        document.getElementById('password').value = ''; // Limpa o campo de senha
+
+        // Salva a sessão do usuário (sem a senha)
+        const userSession = { id: user.id, username: user.username, name: user.name, email: user.email, permissions: user.permissions };
+        localStorage.setItem('loggedInUserSession', JSON.stringify(userSession));
+
+        initializeApp(userSession); // Inicia a aplicação com o usuário logado
+        resetInactivityTimer(); // Inicia o timer de inatividade
+        loadingOverlay.classList.add('loading-hidden'); // Esconde o loading após o login
+    }
+
+    function autoLogin(userSession) {
+        performLogin(userSession); // Usa a mesma lógica de login
+    }
+
+    // Reseta o timer em qualquer interação do usuário
+    window.addEventListener('mousemove', resetInactivityTimer);
+    window.addEventListener('keypress', resetInactivityTimer);
+    window.addEventListener('click', resetInactivityTimer);
+    window.addEventListener('scroll', resetInactivityTimer);
+
     // --- LÓGICA PRINCIPAL DA APLICAÇÃO ---
     // Esta função só é chamada após o login bem-sucedido
     function initializeApp(loggedInUser) {
@@ -108,9 +235,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // --- LÓGICA DOS BOTÕES DE USUÁRIO NO CABEÇALHO ---
         const welcomeMessage = document.getElementById('welcome-message');
+        const btnLogout = document.getElementById('btn-logout');
+        const btnChangeOwnPassword = document.getElementById('btn-change-own-password');
 
         // Mensagem de boas-vindas
+
         welcomeMessage.textContent = `Olá, ${loggedInUser.name}`;
+
+        // Botão Sair
+        btnLogout.addEventListener('click', logout);
+
+        // Botão Alterar Senha
+        btnChangeOwnPassword.addEventListener('click', () => abrirModalAlterarPropriaSenha(loggedInUser));
 
         // --- CONTROLE DE VISIBILIDADE DO MENU POR PERMISSÃO ---
         const menuPermissions = {
@@ -698,7 +834,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para carregar a visualização de cadastro
     function carregarViewCadastro() {
-        loadingOverlay.classList.remove('loading-hidden');
         mainContent.innerHTML = `
             <h2>Alunos Cadastrados</h2>
             <div class="cadastro-header">
@@ -710,31 +845,19 @@ document.addEventListener('DOMContentLoaded', function() {
             <!-- O modal de Novo Cadastro de Aluno e o modal de Edição de Aluno foram movidos para serem injetados uma única vez -->
         `; // Fim do mainContent.innerHTML
 
-        // Agora, busca os alunos do servidor
-        google.script.run
-            .withSuccessHandler(alunos => {
-                mockAlunosDB = alunos; // Atualiza nosso "banco de dados" local
-                renderAlunosTable(mockAlunosDB); // Renderiza a tabela com os dados recebidos
+        renderAlunosTable(mockAlunosDB); // Renderiza a tabela inicial
 
-                // Anexa os listeners DEPOIS que o HTML foi criado e os dados carregados
-                document.getElementById('search-aluno').addEventListener('input', (e) => {
-                    const searchTerm = e.target.value.toLowerCase();
-                    const alunosFiltrados = mockAlunosDB.filter(aluno => 
-                        (aluno.nome && aluno.nome.toLowerCase().includes(searchTerm)) ||
-                        (aluno.turma && aluno.turma.toLowerCase().includes(searchTerm)) ||
-                        (aluno.responsavel && aluno.responsavel.toLowerCase().includes(searchTerm))
-                    );
-                    renderAlunosTable(alunosFiltrados);
-                });
+        document.getElementById('search-aluno').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const alunosFiltrados = mockAlunosDB.filter(aluno => 
+                aluno.nome.toLowerCase().includes(searchTerm) ||
+                aluno.turma.toLowerCase().includes(searchTerm) ||
+                aluno.responsavel.toLowerCase().includes(searchTerm)
+            );
+            renderAlunosTable(alunosFiltrados);
+        });
 
-                document.getElementById('btn-abrir-novo-cadastro').addEventListener('click', () => abrirModalCadastro());
-                loadingOverlay.classList.add('loading-hidden');
-            })
-            .withFailureHandler(error => {
-                mainContent.innerHTML = `<p style="color: red;">Erro ao carregar alunos: ${error.message}</p>`;
-                loadingOverlay.classList.add('loading-hidden');
-            })
-            .servidorGetAlunos();
+        document.getElementById('btn-abrir-novo-cadastro').addEventListener('click', () => abrirModalCadastro());
     }
 
     // --- LÓGICA DO MODAL UNIFICADO DE CADASTRO/EDIÇÃO DE ALUNO ---
@@ -861,7 +984,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Ações a serem executadas tanto para criar quanto para atualizar
-        // saveAlunosToLocalStorage(); // REMOVIDO - Agora chamaremos uma função do servidor
+        saveAlunosToLocalStorage(); // Salva os dados no navegador
         renderAlunosTable(mockAlunosDB); // Atualiza a tabela na tela principal
         modalCadastro.classList.remove('visible'); // Fecha a janela de cadastro
     });
@@ -1768,4 +1891,3 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('Backup gerado com sucesso!');
     }
 });
-</script>
