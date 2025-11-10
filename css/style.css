@@ -17,6 +17,42 @@ body {
     padding: 0 20px;
 }
 
+/* Estilos da Tela de Carregamento */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Garante que fique acima de tudo */
+    transition: opacity 0.5s ease-out; /* Animação de fade-out */
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #e0e0e0; /* Cor base do círculo */
+    border-top-color: #0056b3; /* Cor da parte que gira */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Classe para ocultar o loading */
+.loading-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
 /* Classe Utilitária para Ocultar Elementos */
 .hidden {
     display: none !important;
@@ -323,6 +359,10 @@ body {
     background-color: #dc3545; /* Vermelho */
 }
 
+.btn-view {
+    background-color: #17a2b8; /* Azul info */
+}
+
 /* Estilos para o Modal de Cadastro */
 .modal {
     visibility: hidden; /* Oculto por padrão, mas permite animação */
@@ -481,11 +521,377 @@ body {
     background-color: #f9f9f9;
     border: 1px solid #eee;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.permissions-grid label:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estilos para seleção de serviços no modal de cadastro */
+.service-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.service-radio-label {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.service-radio-label:hover {
+    border-color: #0056b3;
+}
+
+.service-radio-label input[type="radio"]:checked + span {
+    color: #0056b3;
+    font-weight: bold;
 }
 
 /* Grade para os campos de dados do usuário em edição */
 .edit-user-data-grid {
     display: grid;
     grid-template-columns: 1fr; /* Uma coluna por padrão */
+}
+
+/* Estilos unificados para os cards de seleção de serviço (Integral e Extraclasse) */
+.service-card-option {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    transition: box-shadow 0.2s ease;
+}
+
+.service-card-option:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.service-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.service-card-header label {
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+.service-card-header input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+.service-card-body {
+    padding: 15px;
+    font-size: 0.9em;
+    color: #555;
+    line-height: 1.5;
+}
+
+.service-card-body p {
+    margin: 0 0 5px 0;
+}
+
+
+/* Estilos para a Tela de Configurações */
+.settings-section {
+    background-color: #ffffff;
+    padding: 25px;
+    margin-top: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.settings-section h3 {
+    color: #0056b3;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.settings-section p {
+    margin-bottom: 20px;
+    color: #555;
+    line-height: 1.6;
+}
+
+#integral-services-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.service-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fdfdfd;
+}
+
+.service-card h4 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.service-card textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card-actions {
+    margin-top: 15px;
+    text-align: right;
+}
+
+.dias-semana-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.dias-semana-checkboxes label {
+    margin-right: 0; /* Remove a margem desnecessária */
+    display: flex;
+    flex-direction: column-reverse; /* Coloca o texto acima do checkbox */
+    align-items: center; /* Centraliza o conteúdo */
+    gap: 8px; /* Espaço entre o texto e o checkbox */
+    cursor: pointer;
+    padding: 10px 5px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+
+/* Estilos para o Modal de Confirmação Genérico */
+.confirm-modal {
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    z-index: 2000; /* Mais alto que outros modais */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.confirm-modal.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.confirm-modal-content {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.confirm-modal.visible .confirm-modal-content {
+    transform: scale(1);
+}
+
+.confirm-modal-title {
+    font-size: 1.5em;
+    color: #0056b3;
+    margin-bottom: 15px;
+}
+
+.confirm-modal-message {
+    font-size: 1em;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.confirm-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.confirm-modal-btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.confirm-modal-btn:active {
+    transform: scale(0.98);
+}
+
+.confirm-btn-confirm {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+.confirm-btn-confirm:hover { background-color: #218838; }
+
+.confirm-btn-cancel {
+    background-color: #6c757d; /* Cinza */
+    color: white;
+}
+.confirm-btn-cancel:hover { background-color: #5a6268; }
+
+.confirm-btn-ok {
+    background-color: #0056b3; /* Azul principal */
+    color: white;
+}
+.confirm-btn-ok:hover { background-color: #004494; }
+
+/* --- Estilos para Notificações (Toasts) --- */
+
+/* Container para as notificações */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999; /* Garante que fique acima de tudo */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* Estilo base do toast */
+.toast {
+    background-color: #333;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    min-width: 250px;
+    max-width: 350px;
+}
+
+/* Estilo para toast de sucesso */
+.toast.success {
+    background-color: #28a745; /* Verde */
+}
+
+/* Estado visível do toast */
+.toast.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* --- Estilos para a Seção Financeira --- */
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+.status-badge.pago { background-color: #28a745; }
+.status-badge.pendente { background-color: #ffc107; color: #333; }
+.status-badge.na { background-color: #6c757d; }
+
+.financeiro-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.financeiro-section h4 {
+    color: #0056b3;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.financeiro-valores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    align-items: end;
+    margin: 15px 0;
+}
+
+.financeiro-valores .form-group {
+    margin-bottom: 0;
+}
+
+.financeiro-valores input {
+    font-weight: bold;
+}
+
+.financeiro-valores input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.total-pagar input {
+    color: #28a745;
+    font-size: 1.1em;
+}
+
+.financeiro-status-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.financeiro-status {
+    font-weight: 500;
+}
+
+.financeiro-total-geral {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e9ecef;
+    text-align: center;
+    border-radius: 6px;
+}
+
+.financeiro-total-geral h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.financeiro-total-geral strong {
+    font-size: 1.8em;
+    color: #0056b3;
 }
