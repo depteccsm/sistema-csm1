@@ -1,0 +1,897 @@
+/* Reset e Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Estilos da Tela de Carregamento */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Garante que fique acima de tudo */
+    transition: opacity 0.5s ease-out; /* Animação de fade-out */
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #e0e0e0; /* Cor base do círculo */
+    border-top-color: #0056b3; /* Cor da parte que gira */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Classe para ocultar o loading */
+.loading-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Classe Utilitária para Ocultar Elementos */
+.hidden {
+    display: none !important;
+}
+
+/* Estilos da Tela de Login */
+.login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.login-box {
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-box h2 {
+    margin-bottom: 25px;
+    color: #0056b3;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #004494;
+}
+
+.login-error-message {
+    color: #d93025;
+    margin-top: 15px;
+    min-height: 1em;
+}
+
+/* Cabeçalho */
+.header {
+    background-color: #ffffff;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    font-size: 1.8em;
+    color: #0056b3;
+    flex-grow: 1; /* Faz o título ocupar o espaço disponível */
+    text-align: center; /* Centraliza o texto dentro do espaço */
+    margin: 0 20px; /* Adiciona um espaçamento para não colar no logo/menu */
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Ações do Usuário no Cabeçalho */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto; /* Empurra para a direita */
+    padding-right: 20px;
+}
+
+#welcome-message {
+    font-size: 0.9em;
+    color: #555;
+    white-space: nowrap;
+}
+
+.btn-action-header {
+    padding: 8px 12px;
+    border: 1px solid #0056b3;
+    background-color: #f0f8ff;
+    color: #0056b3;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-action-header:hover {
+    background-color: #0056b3;
+    color: #ffffff;
+}
+
+/* Menu de Navegação */
+.nav-menu {
+    display: flex;
+    justify-content: center;
+    background-color: #0056b3;
+    padding: 15px 0;
+}
+
+.nav-button {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 25px;
+    margin: 0 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #004494;
+}
+
+/* Logo do Cabeçalho */
+.header-logo {
+    height: 60px; /* Ajuste a altura conforme necessário */
+    width: auto;
+}
+
+/* Menu Hamburguer para Dispositivos Móveis */
+.menu-toggle {
+    display: none; /* Oculto por padrão */
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-icon,
+.menu-icon::before,
+.menu-icon::after {
+    content: '';
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #0056b3;
+    border-radius: 3px;
+    transition: transform 0.3s ease;
+}
+
+.menu-icon::before {
+    transform: translateY(-8px);
+}
+
+.menu-icon::after {
+    transform: translateY(5px);
+}
+
+/* Estilos para Telas Menores (Responsividade) */
+@media (max-width: 768px) {
+    .header-title {
+        font-size: 1.5em;
+    }
+
+    .menu-toggle {
+        display: block; /* Exibe o ícone do menu */
+    }
+
+    .nav-menu {
+        display: none; /* Esconde o menu de navegação */
+        flex-direction: column;
+        width: 100%;
+        background-color: #0056b3;
+        position: absolute;
+        top: 80px; /* Ajuste conforme a altura do seu header */
+        left: 0;
+        padding: 0;
+    }
+
+    .nav-menu.active {
+        display: flex; /* Exibe o menu quando ativo */
+    }
+
+    .nav-button {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #004494;
+        margin: 0;
+    }
+
+    .nav-button:last-child {
+        border-bottom: none;
+    }
+}
+
+/* Estilos para a Seção de Cadastro de Alunos */
+.cadastro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    width: 100%;
+    max-width: 300px;
+}
+
+.btn-novo-cadastro {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.btn-novo-cadastro:hover {
+    background-color: #218838;
+}
+
+.alunos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.alunos-table th, .alunos-table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.alunos-table th {
+    background-color: #0056b3;
+    color: white;
+}
+
+.alunos-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilos para botões de ação na tabela */
+.actions-cell {
+    text-align: center;
+}
+
+.btn-action {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    margin: 0 4px;
+    font-size: 0.9em;
+}
+
+.btn-edit {
+    background-color: #ffc107; /* Amarelo */
+}
+
+.btn-delete {
+    background-color: #dc3545; /* Vermelho */
+}
+
+/* Estilos para botões de ação na tabela */
+.actions-cell {
+    text-align: center;
+}
+
+.btn-action {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    margin: 0 4px;
+    font-size: 0.9em;
+}
+
+.btn-edit {
+    background-color: #ffc107; /* Amarelo */
+}
+
+.btn-delete {
+    background-color: #dc3545; /* Vermelho */
+}
+
+.btn-view {
+    background-color: #17a2b8; /* Azul info */
+}
+
+/* Estilos para o Modal de Cadastro */
+.modal {
+    visibility: hidden; /* Oculto por padrão, mas permite animação */
+    opacity: 0;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.modal.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 0;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transform: translateY(-20px);
+    transition: transform 0.4s ease;
+}
+
+.modal.visible .modal-content {
+    transform: translateY(0);
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+}
+
+.modal-header {
+    padding: 15px 25px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer {
+    padding: 15px 25px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+
+.modal-footer .btn-action {
+    background-color: #6c757d; /* Cinza */
+}
+.modal-footer .btn-action:hover {
+    background-color: #5a6268;
+}
+
+/* Estilos para o novo sistema de abas no Modal */
+.tab-container {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-size: 1em;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.tab-button.active {
+    color: #0056b3;
+    border-bottom-color: #0056b3;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none; /* Oculto por padrão */
+    animation: fadeIn 0.5s;
+}
+
+.tab-content.active {
+    display: block; /* Exibe o conteúdo da aba ativa */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Estilos para a Grade de Permissões no Modal */
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Cria 2 colunas de tamanho igual */
+    gap: 10px; /* Espaçamento entre as checkboxes */
+    margin-top: 10px;
+}
+
+.permissions-grid label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaçamento entre a caixa de seleção e o texto */
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.permissions-grid label:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estilos para seleção de serviços no modal de cadastro */
+.service-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.service-radio-label {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.service-radio-label:hover {
+    border-color: #0056b3;
+}
+
+.service-radio-label input[type="radio"]:checked + span {
+    color: #0056b3;
+    font-weight: bold;
+}
+
+/* Grade para os campos de dados do usuário em edição */
+.edit-user-data-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Uma coluna por padrão */
+}
+
+/* Estilos unificados para os cards de seleção de serviço (Integral e Extraclasse) */
+.service-card-option {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    transition: box-shadow 0.2s ease;
+}
+
+.service-card-option:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.service-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.service-card-header label {
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+.service-card-header input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+.service-card-body {
+    padding: 15px;
+    font-size: 0.9em;
+    color: #555;
+    line-height: 1.5;
+}
+
+.service-card-body p {
+    margin: 0 0 5px 0;
+}
+
+
+/* Estilos para a Tela de Configurações */
+.settings-section {
+    background-color: #ffffff;
+    padding: 25px;
+    margin-top: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.settings-section h3 {
+    color: #0056b3;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.settings-section p {
+    margin-bottom: 20px;
+    color: #555;
+    line-height: 1.6;
+}
+
+#integral-services-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.service-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fdfdfd;
+}
+
+.service-card h4 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.service-card textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card-actions {
+    margin-top: 15px;
+    text-align: right;
+}
+
+.dias-semana-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.dias-semana-checkboxes label {
+    margin-right: 0; /* Remove a margem desnecessária */
+    display: flex;
+    flex-direction: column-reverse; /* Coloca o texto acima do checkbox */
+    align-items: center; /* Centraliza o conteúdo */
+    gap: 8px; /* Espaço entre o texto e o checkbox */
+    cursor: pointer;
+    padding: 10px 5px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+
+/* Estilos para o Modal de Confirmação Genérico */
+.confirm-modal {
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    z-index: 2000; /* Mais alto que outros modais */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.confirm-modal.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.confirm-modal-content {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.confirm-modal.visible .confirm-modal-content {
+    transform: scale(1);
+}
+
+.confirm-modal-title {
+    font-size: 1.5em;
+    color: #0056b3;
+    margin-bottom: 15px;
+}
+
+.confirm-modal-message {
+    font-size: 1em;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.confirm-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.confirm-modal-btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.confirm-modal-btn:active {
+    transform: scale(0.98);
+}
+
+.confirm-btn-confirm {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+.confirm-btn-confirm:hover { background-color: #218838; }
+
+.confirm-btn-cancel {
+    background-color: #6c757d; /* Cinza */
+    color: white;
+}
+.confirm-btn-cancel:hover { background-color: #5a6268; }
+
+.confirm-btn-ok {
+    background-color: #0056b3; /* Azul principal */
+    color: white;
+}
+.confirm-btn-ok:hover { background-color: #004494; }
+
+/* --- Estilos para Notificações (Toasts) --- */
+
+/* Container para as notificações */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999; /* Garante que fique acima de tudo */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* Estilo base do toast */
+.toast {
+    background-color: #333;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    min-width: 250px;
+    max-width: 350px;
+}
+
+/* Estilo para toast de sucesso */
+.toast.success {
+    background-color: #28a745; /* Verde */
+}
+
+/* Estado visível do toast */
+.toast.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* --- Estilos para a Seção Financeira --- */
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+.status-badge.pago { background-color: #28a745; }
+.status-badge.pendente { background-color: #ffc107; color: #333; }
+.status-badge.na { background-color: #6c757d; }
+
+.financeiro-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.financeiro-section h4 {
+    color: #0056b3;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.financeiro-valores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    align-items: end;
+    margin: 15px 0;
+}
+
+.financeiro-valores .form-group {
+    margin-bottom: 0;
+}
+
+.financeiro-valores input {
+    font-weight: bold;
+}
+
+.financeiro-valores input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.total-pagar input {
+    color: #28a745;
+    font-size: 1.1em;
+}
+
+.financeiro-status-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.financeiro-status {
+    font-weight: 500;
+}
+
+.financeiro-total-geral {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e9ecef;
+    text-align: center;
+    border-radius: 6px;
+}
+
+.financeiro-total-geral h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.financeiro-total-geral strong {
+    font-size: 1.8em;
+    color: #0056b3;
+}
