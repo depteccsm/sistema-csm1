@@ -57,7 +57,7 @@
             height: auto;
             border-radius: 50%;
             box-shadow: 0 0 100px rgba(0, 210, 255, 0.2);
-            transition: transform 20s cubic-bezier(0.1, 1, 0.2, 1);
+            transition: transform 20s cubic-bezier(0.15, 0, 0.15, 1);
         }
 
         #pointer {
@@ -251,17 +251,12 @@ Rodrigo Mendonça Pereira
         <source src="https://www.myinstants.com/media/sounds/piao-do-bau.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="audioTick">
-        <source src="https://www.soundjay.com/buttons/button-16.mp3" type="audio/mpeg">
-    </audio>
-
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const namesInput = document.getElementById('namesInput');
         const display = document.getElementById('display');
         const audio = document.getElementById('audioPiao');
-        const audioTick = document.getElementById('audioTick');
         const listaSorteadosUl = document.getElementById('listaSorteados');
         const muteBtn = document.getElementById('muteBtn');
         const winnerCountInput = document.getElementById('winnerCount');
@@ -270,9 +265,6 @@ Rodrigo Mendonça Pereira
         let sorteados = [];
         let currentRotation = 0;
         let isSpinning = false;
-        let lastSegmentIndex = -1;
-
-        audioTick.volume = 0.4; // Ajusta o volume do clique (0.0 a 1.0)
 
         function drawWheel() {
             const lines = namesInput.value.split('\n').filter(n => n.trim() !== "" && !sorteados.includes(n.trim()));
@@ -313,39 +305,6 @@ Rodrigo Mendonça Pereira
             });
         }
 
-        // Função para detectar a passagem das fatias e tocar o som
-        function checkTick() {
-            if (!isSpinning) return;
-
-            // Obtém a rotação atual computada do CSS (em matriz)
-            const style = window.getComputedStyle(canvas);
-            const matrix = style.transform || style.webkitTransform;
-            
-            if (matrix && matrix !== 'none') {
-                const values = matrix.split('(')[1].split(')')[0].split(',');
-                const a = parseFloat(values[0]);
-                const b = parseFloat(values[1]);
-                const angle = Math.atan2(b, a) * (180 / Math.PI);
-                const normalizedAngle = (angle < 0) ? angle + 360 : angle;
-
-                const totalSegments = names.length;
-                if (totalSegments > 0) {
-                    const currentSegment = Math.floor(normalizedAngle / (360 / totalSegments));
-                    if (currentSegment !== lastSegmentIndex) {
-                        if (!audio.muted) {
-                            if (navigator.vibrate) {
-                                navigator.vibrate(50); // Vibra por 50 milissegundos
-                            }
-                            audioTick.currentTime = 0;
-                            audioTick.play().catch(() => {});
-                        }
-                        lastSegmentIndex = currentSegment;
-                    }
-                }
-            }
-            requestAnimationFrame(checkTick);
-        }
-
         function spin() {
             if (isSpinning || names.length === 0) return;
 
@@ -356,15 +315,12 @@ Rodrigo Mendonça Pereira
             audio.currentTime = 0;
             audio.play();
 
-            const extraDegrees = Math.floor(Math.random() * 360) + 21600; // 60 voltas para velocidade inicial maior
+            const extraDegrees = Math.floor(Math.random() * 360) + 14400; // 40 voltas para manter a fluidez
             currentRotation += extraDegrees;
-            
-            // Inicia o monitoramento do som de clique
-            lastSegmentIndex = -1;
-            requestAnimationFrame(checkTick);
             
             canvas.style.transform = `rotate(${currentRotation}deg)`;
             display.style.opacity = "0.4"; // Reduz a opacidade para criar suspense
+            display.style.fontSize = count > 1 ? "2.5rem" : "3.5rem"; // Ajusta fonte se forem muitos nomes
             
             let fontSize;
             if (count === 1) {
@@ -410,7 +366,7 @@ Rodrigo Mendonça Pereira
                 });
 
                 drawWheel(); // Redesenha sem o nome sorteado
-            }, 20000); // Sincronizado com a duração da animação (20s)
+            }, 8000);
         }
 
         function reset() {
