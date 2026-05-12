@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Roleta do Colégio Stella Matutina</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #e94560;
+            --secondary: #0f3460;
+            --bg: #1a1a2e;
+            --accent: #00d2ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: white;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Painel Lateral */
+        .sidebar {
+            width: 350px;
+            background: rgba(22, 22, 37, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.3));
+        }
+
+        /* Área Central */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        canvas {
+            max-width: 90%;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 0 100px rgba(0, 210, 255, 0.2);
+            transition: transform 20s cubic-bezier(0.1, 1, 0.2, 1);
+        }
+
+        #pointer {
+            position: absolute;
+            top: 50%;
+            right: 15%; /* Ajustado para a lateral da roleta */
+            transform: translateY(-50%) rotate(90deg);
+            width: 0; height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 50px solid var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary));
+            z-index: 100;
+        }
+
+        textarea {
+            background: #16213e;
+            border: 1px solid #4e4e4e;
+            color: #00d2ff;
+            padding: 10px;
+            border-radius: 8px;
+            resize: none;
+            height: 150px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .btn:disabled { background: #555; cursor: not-allowed; }
+        .btn-reset { background: #4e4e4e; margin-top: auto; }
+
+        #display {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-top: 40px;
+            text-align: center;
+            min-height: 100px;
+            background: linear-gradient(90deg, #00d2ff, #fff, #3a7bd5, #00d2ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 3s linear infinite;
+            text-transform: uppercase;
+            transition: opacity 0.3s;
+            letter-spacing: 2px;
+        }
+
+        @keyframes textShimmer {
+            to { background-position: 200% center; }
+        }
+
+        .winner-pop {
+            animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.5));
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.3) rotate(-15deg); opacity: 0; filter: blur(15px); }
+            70% { transform: scale(1.1) rotate(5deg); opacity: 1; filter: blur(0); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .audio-control-btn {
+            background: #4e4e4e;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .list-count { font-size: 0.8rem; color: #aaa; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <img src="https://stellaescolaviva.com.br/wp-content/uploads/2023/08/Ativo-7.png" alt="Logo Colégio Stella Matutina" class="logo">
+        <h2 style="margin: 0; text-align: center; font-size: 1.4rem;">Roleta Stella Matutina</h2>
+        <p class="list-count">Insira um nome por linha:</p>
+        <textarea id="namesInput" placeholder="Ex: Girafales&#10;Snape&#10;Keating">Aline Cristine da Motta Pires
+Aline Fonseca Petermann
+Aline Giannini Silva
+Cristina Campos Toledo
+Janete Gloria Vieira Soares
+Jéssica Aparecida Ladeira Ferreira
+Ketery Simone Franca Sixel de Castro
+Larissa Almeida de Medeiros
+Shaider do Nascimento Almeida
+Sheila Chaves Soares
+Thais da Silva Teixeira Leite Rodrigues
+Thais de Oliveira Braga Duque
+Valéria Elisiane Wriedt
+Barbara Cristina Rodrigues Ferreira
+Carolina Cardoso Clemente Pugliese
+Édipo Luis da Silva
+Flávia dos Santos Toledo
+Josseanny Jezebel Torres Aliaga
+José Flavio de Souza
+Josiane Pereira Jeronimo
+Karina de Almeida Winter
+Layla Delgado Carvalho
+Lavinia Barbosa de Andrade
+Lidiane Nascimento Nocelli
+Livia de Oliveira Thomaz
+Marcia Mendes Ferreira
+Natalia Jacintho da Costa de Lemos
+Raquel Laviola de Almeida
+Roberta Pereira da Silva
+Roberta Pimentel Aouila
+Rodrigo Amorim Arbex
+Rogelia Aparecida de Rezende
+Thiago Silva de Castro
+Adriana de Oliveira
+Darlei Marques de Amorim
+Diego de Souza Moreira
+Elder Renato da Silva Miranda
+Gerry Adriano da Silva
+Jordana Matos de Paula Vieira
+Leocadia de Lourdes Brucker Coelho
+Marcela Oliveira Afonso
+Marluce da Silva Fassizoli
+Mikaella Manso Macedo Tavares
+Peterson Basilio de Carvalho
+Raquel Santos Lombardi
+Tiago Alves Reis
+Virna Ligia Fernandes Braga
+André Lopes Quirino
+Andressa Marques Pinto
+Arturo Leon Fernandes
+Carina Neves Freitas
+Ciro Lino Bellan
+Fernanda Júlio Campos
+Gicelma Duarte Fonseca
+João Francisco de Sales Neto
+João Moreira de Andrade Neto
+Josiane Guedes Sales
+Luciano Tavares Torres
+Onésima Marques Silva
+Rafael de Souza Bertante
+Sibelius de Souza Bernardes
+Rodrigo Mendonça Pereira
+</textarea>
+        
+        <div class="input-group">
+            <label for="winnerCount">Quantidade por sorteio:</label>
+            <input type="number" id="winnerCount" value="1" min="1" max="10" style="background: #16213e; border: 1px solid #4e4e4e; color: #00d2ff; padding: 8px; border-radius: 8px;">
+        </div>
+
+        <button class="btn" onclick="spin()">Rodar Pião!</button>
+        <div class="audio-controls">
+            <button id="muteBtn" class="audio-control-btn" onclick="toggleMute()">🎵 Mudar Música</button>
+        </div>
+        
+        <div id="historico" style="margin-top:20px; overflow-y:auto; flex-grow:1;">
+            <strong style="color:var(--accent)">Já Sorteados:</strong>
+            <ul id="listaSorteados" style="list-style: none; padding: 0; color: #888;"></ul>
+        </div>
+
+        <button class="btn btn-reset" onclick="reset()">Limpar</button>
+    </div>
+
+    <div class="main-content">
+        <div id="pointer"></div>
+        <canvas id="canvas" width="600" height="600"></canvas>
+        <div id="display">QUEM SERÁ?</div>
+    </div>
+
+    <audio id="audioPiao">
+        <source src="https://www.myinstants.com/media/sounds/piao-do-bau.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="audioTick">
+        <source src="https://www.soundjay.com/buttons/button-16.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const namesInput = document.getElementById('namesInput');
+        const display = document.getElementById('display');
+        const audio = document.getElementById('audioPiao');
+        const audioTick = document.getElementById('audioTick');
+        const listaSorteadosUl = document.getElementById('listaSorteados');
+        const muteBtn = document.getElementById('muteBtn');
+        const winnerCountInput = document.getElementById('winnerCount');
+
+        let names = [];
+        let sorteados = [];
+        let currentRotation = 0;
+        let isSpinning = false;
+        let lastSegmentIndex = -1;
+
+        audioTick.volume = 0.4; // Ajusta o volume do clique (0.0 a 1.0)
+
+        function drawWheel() {
+            const lines = namesInput.value.split('\n').filter(n => n.trim() !== "" && !sorteados.includes(n.trim()));
+            names = lines;
+            
+            const total = names.length;
+            const arc = (2 * Math.PI) / total;
+            ctx.clearRect(0, 0, 600, 600);
+
+            if (total === 0) {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("Insira novos nomes!", 300, 300);
+                return;
+            }
+
+            names.forEach((name, i) => {
+                const angle = i * arc;
+                
+                // Desenhar fatia
+                ctx.beginPath();
+                ctx.fillStyle = `hsl(${(i * 360 / total)}, 70%, 50%)`;
+                ctx.moveTo(300, 300);
+                ctx.arc(300, 300, 280, angle, angle + arc);
+                ctx.lineTo(300, 300);
+                ctx.fill();
+                ctx.stroke();
+
+                // Texto
+                ctx.save();
+                ctx.translate(300, 300);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "white";
+                ctx.font = "bold 18px Arial";
+                ctx.fillText(name, 250, 10);
+                ctx.restore();
+            });
+        }
+
+        // Função para detectar a passagem das fatias e tocar o som
+        function checkTick() {
+            if (!isSpinning) return;
+
+            // Obtém a rotação atual computada do CSS (em matriz)
+            const style = window.getComputedStyle(canvas);
+            const matrix = style.transform || style.webkitTransform;
+            
+            if (matrix && matrix !== 'none') {
+                const values = matrix.split('(')[1].split(')')[0].split(',');
+                const a = parseFloat(values[0]);
+                const b = parseFloat(values[1]);
+                const angle = Math.atan2(b, a) * (180 / Math.PI);
+                const normalizedAngle = (angle < 0) ? angle + 360 : angle;
+
+                const totalSegments = names.length;
+                if (totalSegments > 0) {
+                    const currentSegment = Math.floor(normalizedAngle / (360 / totalSegments));
+                    if (currentSegment !== lastSegmentIndex) {
+                        if (!audio.muted) {
+                            if (navigator.vibrate) {
+                                navigator.vibrate(50); // Vibra por 50 milissegundos
+                            }
+                            audioTick.currentTime = 0;
+                            audioTick.play().catch(() => {});
+                        }
+                        lastSegmentIndex = currentSegment;
+                    }
+                }
+            }
+            requestAnimationFrame(checkTick);
+        }
+
+        function spin() {
+            if (isSpinning || names.length === 0) return;
+
+            const countRequested = parseInt(winnerCountInput.value) || 1;
+            const count = Math.min(countRequested, names.length);
+
+            isSpinning = true;
+            audio.currentTime = 0;
+            audio.play();
+
+            const extraDegrees = Math.floor(Math.random() * 360) + 21600; // 60 voltas para velocidade inicial maior
+            currentRotation += extraDegrees;
+            
+            // Inicia o monitoramento do som de clique
+            lastSegmentIndex = -1;
+            requestAnimationFrame(checkTick);
+            
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+            display.style.opacity = "0.4"; // Reduz a opacidade para criar suspense
+            
+            let fontSize;
+            if (count === 1) {
+                fontSize = "3.5rem";
+            } else if (count <= 3) { // 2 ou 3 ganhadores
+                fontSize = "2.5rem";
+            } else if (count <= 5) { // 4 ou 5 ganhadores
+                fontSize = "2rem";
+            } else { // 6 ou mais ganhadores
+                fontSize = "1.5rem"; // Pode ser ajustado para um valor menor se necessário
+            }
+            display.style.fontSize = fontSize;
+
+            setTimeout(() => {
+                isSpinning = false;
+                const actualAngle = (currentRotation % 360);
+                const landingIndex = Math.floor(((360 - actualAngle) % 360) / (360 / names.length));
+                
+                const winners = [];
+                for (let i = 0; i < count; i++) {
+                    const idx = (landingIndex + i) % names.length;
+                    winners.push(names[idx]);
+                }
+
+                display.style.opacity = "1";
+                display.innerHTML = winners.join('<br>');
+                display.classList.remove('winner-pop');
+                void display.offsetWidth; // Truque para resetar a animação CSS
+                display.classList.add('winner-pop');
+
+                winners.forEach(winner => {
+                    sorteados.push(winner);
+                    const li = document.createElement('li');
+                    li.innerText = `✔️ ${winner}`;
+                    listaSorteadosUl.appendChild(li);
+                });
+
+                // Confetes!
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                drawWheel(); // Redesenha sem o nome sorteado
+            }, 20000); // Sincronizado com a duração da animação (20s)
+        }
+
+        function reset() {
+            sorteados = [];
+            listaSorteadosUl.innerHTML = "";
+            display.classList.remove('winner-pop');
+            display.innerText = "QUEM SERÁ?";
+            drawWheel();
+        }
+
+        function toggleMute() {
+            audio.muted = !audio.muted;
+            if (audio.muted) {
+                muteBtn.innerText = '🔇 Música Desativada';
+            } else {
+                muteBtn.innerText = '🎵 Música Ativada';
+            }
+        }
+
+        // Monitorar mudanças no texto
+        namesInput.addEventListener('input', drawWheel);
+        
+        // Inicializar
+        drawWheel();
+    </script>
+</body>
+</html>
